@@ -1,0 +1,250 @@
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" rel="stylesheet"> 
+  <link href="https://unpkg.com/ionicons@4.5.5/dist/css/ionicons.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <title>.NET Core JenkinsFile</title>
+<body>
+  <section class="section section__hero">
+    <div class="section__content">
+      <div class="flexgrid flexgrid--columns">
+        <div class="hero__nav">
+          <a href="/#projects">projects</a>          
+          <a href="/#skills">skills</a>
+          <a href="/#code_examples">code examples</a>
+          <a href="/#contact_me">contact me</a>
+        </div>
+        <div class="hero__header">
+          <div class="hero__scene">
+            <div class="hero__anim cube">
+              <div class="hero__section hero__section--1"></div>
+              <div class="hero__section hero__section--2"></div>
+              <div class="hero__section hero__section--3"></div>
+            </div>
+          </div>
+          <div class="hero__titles">
+            <h2 class="hero__title hero__title--main">Mark Hammond</h2>
+              <h4 class="hero__title hero__title--sub hero__title--cursor"></h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section section--white">
+  <div class="section__content flexgrid flexgrid--columns">
+    <h1 class="section__header">.NET Core Jenkinsfile Example</h1>
+
+    <p>Below is an example of a jenkinsfile produced for a .NET core project, stripped down and with generic names for the folder paths. It has a function defined for running automated tests and displaying the results in Jenkins using the MSTestPublisher plugin.</p>
+
+    <p>It has example code for running a JMeter load test, though in this instance it is commented out.</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>env.OUTPUT_PATH = '/var/project-directory'
+env.DOCU_PATH = '/var/documentation-directory'
+env.DEPLOYMENT_SERVER = 'YOUR_SERVER_LABEL'
+
+def test(type) {
+  dir("tests/${type}") {
+    sh "rm -rf TestResults/*"
+	try {
+      sh "dotnet restore &amp;&amp; dotnet test --logger 'trx;LogFileName=TestResults.trx'"
+	}
+	finally {
+	  step([$class: 'MSTestPublisher', testResultsFile:"TestResults/*.trx", keepLongStdio: true])
+	}	
+  }
+}
+
+pipeline {
+  agent {label DEPLOYMENT_SERVER}   
+
+  stages {
+	  stage('Prepare build environment') {
+	    steps{
+			dir(".") {
+			  sh 'hostnamectl'
+			  sh 'git reset --hard ORIG_HEAD'
+			  sh 'git pull origin master'
+			}
+		}
+	  }
+
+	  stage('Unit test') {
+		steps {
+			test('UnitTests')
+		}		
+	  }
+
+	  stage('Integration test') {
+		steps {
+			test('IntegrationTests')
+		}		
+	  }
+
+	  stage('Deploy to snapshot environment') {
+	    steps {
+			dir("src/Api") {
+			  sh 'dotnet restore'
+			  sh 'systemctl stop kestrel-api-snapshot.service'
+			  sh "rm -rf ${OUTPUT_PATH}/api/*"
+			  sh "dotnet publish -c Release -f netcoreapp2.1 -r linux-x64 -o ${OUTPUT_PATH}/api"
+			  sh "mkdir ${OUTPUT_PATH}/api/logs"
+			  sh "chmod g+s ${OUTPUT_PATH}/api/logs"
+			  sh 'systemctl start kestrel-api-snapshot.service'
+			}
+			dir('src/IdentityServer') {
+			  sh 'dotnet restore'
+			  sh 'systemctl stop kestrel-auth-snapshot.service'
+			  sh "rm -rf ${OUTPUT_PATH}/auth/*"
+			  sh "dotnet publish -c Release -f netcoreapp2.1 -r linux-x64 -o ${OUTPUT_PATH}/auth"
+			  sh "mkdir ${OUTPUT_PATH}/auth/logs"
+			  sh "chmod g+s ${OUTPUT_PATH}/auth/logs"
+			  sh 'systemctl start kestrel-auth-snapshot.service'
+			}
+		}		
+	  }  
+
+	stage('Functional test') {
+	  steps {
+		test('FunctionalTests')
+	  }			
+	} 
+	
+	/*
+	stage('Performance test') {
+	  agent {label 'jmeter'}
+	
+	  steps {
+		sh "rm -f JMeter.jtl"
+		sh "jmeter -Jjmeter.save.saveservice.output_format=xml
+          -n -t JMeter.jmx 
+            -l JMeter.jtl"
+		perfReport 'JMeter.jtl'
+	  }			
+	}
+	*/
+
+	stage('Deploy Documentation') {
+	  steps {
+		dir('docs/website') {
+			  sh "npm i"
+			  sh "rm -rf build/*"
+			  sh "npm run build"
+			  sh "rm -rf ${DOCU_PATH}/*"
+			  sh "cp -r -f ./build/docs/. ${DOCU_PATH}/"
+			}
+	  }		
+	}	
+  }
+}
+</code></pre></div>    </div>
+  </div>
+</section>
+
+  <section class="section section--dark section__footer flexgrid flexgrid--columns">
+    <h4 id="contact_me" class="footer__header"><a href="mailto:mark_hammond@live.co.uk">mark_hammond@live.co.uk</a></h4>
+    <h4 class="footer__header"><a href="https://github.com/mhammo"><img class="logo__github" src="assets/img/GitHub-Mark-Inverted-64px.png"> https://github.com/mhammo</a></h4>
+    
+  </section>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.4/bluebird.min.js"></script>
+<script src="main-client.js"></script>
+<script>
+  var transition = 2000
+
+  function changeToStack() {
+    var cubes = document.querySelectorAll('.hero__anim');
+    [].slice.call(cubes).forEach(function (el) {
+      el.classList.add('out')
+      setTimeout(function () {
+        el.classList.remove('cube')
+        el.classList.remove('out')
+        el.classList.add('stack')
+      }, 500);
+    });
+  }
+
+  function changeToBar() {
+    var cubes = document.querySelectorAll('.hero__anim');
+    [].slice.call(cubes).forEach(function (el) {
+      el.classList.add('out')
+      setTimeout(function () {
+        el.classList.remove('stack')
+        el.classList.remove('out')
+        el.classList.add('bar')
+      }, 500);
+    });
+  }
+
+  function changeToCube() {
+    var cubes = document.querySelectorAll('.hero__anim');
+    [].slice.call(cubes).forEach(function (el) {
+      el.classList.add('out')
+      setTimeout(function () {
+        el.classList.remove('bar')
+        el.classList.remove('out')
+        el.classList.add('cube')
+      }, 500);
+    });
+  }
+
+  function typewriter(selector, speed, txt) {
+    var e = document.querySelector(selector);
+    var promise = new Promise(function (resolve) {
+      var i = 0;
+      e.innerText = "";
+      e.style.opacity = 1;
+
+      var writeText = function () {
+        if (i < txt.length) {
+          e.innerHTML += txt.charAt(i);
+          i++;
+          setTimeout(writeText, speed);
+        }
+        else {
+          resolve();
+        }
+      }
+
+      writeText();
+    });
+
+    return promise;
+  }
+
+  var headers = ["Data Analytics", "Full-stack development", "Data visualisation"];
+
+  function changeSubHeader(i) {
+    if (i >= headers.length || i == null)
+      i = 0;
+
+    switch (i) {
+      case 0:
+        var f = changeToCube
+        break;
+      case 1:
+        var f = changeToStack
+        break;
+      case 2:
+        var f = changeToBar
+        break;
+    }
+
+    f();
+    setTimeout(function () {
+      typewriter(".hero__title--sub", 120, headers[i])
+        .then(function () {
+          setTimeout(function () {
+            i++;
+            changeSubHeader(i);
+          }, transition);
+        });
+    }, 500);
+  }
+
+  changeSubHeader(1);	 
+</script>
+</body>
+
+</html>

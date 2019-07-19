@@ -1,0 +1,176 @@
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" rel="stylesheet"> 
+  <link href="https://unpkg.com/ionicons@4.5.5/dist/css/ionicons.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <title>Erasmus+ Sunburst</title>
+<body>
+  <section class="section section__hero">
+    <div class="section__content">
+      <div class="flexgrid flexgrid--columns">
+        <div class="hero__nav">
+          <a href="/#projects">projects</a>          
+          <a href="/#skills">skills</a>
+          <a href="/#code_examples">code examples</a>
+          <a href="/#contact_me">contact me</a>
+        </div>
+        <div class="hero__header">
+          <div class="hero__scene">
+            <div class="hero__anim cube">
+              <div class="hero__section hero__section--1"></div>
+              <div class="hero__section hero__section--2"></div>
+              <div class="hero__section hero__section--3"></div>
+            </div>
+          </div>
+          <div class="hero__titles">
+            <h2 class="hero__title hero__title--main">Mark Hammond</h2>
+              <h4 class="hero__title hero__title--sub hero__title--cursor"></h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section section--white">
+  <div class="section__content flexgrid flexgrid--columns">
+    <h1 class="section__header">Erasmus+ Sunburst</h1>
+
+    <h4 id="goals">Goals</h4>
+    <ul>
+      <li>The client wanted a data visualisation to show the outputs and outcomes of the Erasmus+ EU funding programme</li>
+      <li>The data visualisation has to be integrated into and editable within a Drupal CMS</li>
+      <li>The data visualisation needed to be mobile friendly</li>
+      <li>When you click on a section of the sunburst, it should load in content relevant to the clicked section</li>
+    </ul>
+
+    <h4 id="proposed-solution">Proposed Solution</h4>
+    <ul>
+      <li>Create a sunburst data visualisation using D3</li>
+      <li>Create the sunburst dataset using a custom Drupal database query</li>
+      <li>The sunburst sections are represented with taxonomies, and the content type tagged with that taxonomy is what appears underneath the sunburst upon click</li>
+      <li>The sunburst code is built using ES6, webpack and babel to enable quick clean development code, which can be compiled into cross-browser-compatible JS</li>
+    </ul>
+
+    <h4 id="result">Result</h4>
+<a class="project__link" href="https://www.erasmusplus.org.uk/erasmus-uk-logic-model#445" markdown="1">
+  <span>See the sunburst visualisation here</span>
+  <svg class="project__link_arrow" viewBox="0 0 13.5 12.2">
+    <path d="M7.5 12.2l-.7-.7 5.3-5.4L6.8.7l.7-.7 6 6.1"></path>
+    <path opacity="0.5" d="M0 5.6h12.4v1H0z"></path>
+  </svg>
+</a>
+    <ul>
+      <li>The client and their stakeholders were very happy with the data visualisation!</li>
+      <li>The website content editors were able to easily understand how to edit the sunburst content</li>
+      <li>The content is highly customisable in the CMS, down to even the sunburst section colors</li>
+    </ul>
+  </div>
+</section>
+
+  <section class="section section--dark section__footer flexgrid flexgrid--columns">
+    <h4 id="contact_me" class="footer__header"><a href="mailto:mark_hammond@live.co.uk">mark_hammond@live.co.uk</a></h4>
+    <h4 class="footer__header"><a href="https://github.com/mhammo"><img class="logo__github" src="assets/img/GitHub-Mark-Inverted-64px.png"> https://github.com/mhammo</a></h4>
+    
+  </section>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.4/bluebird.min.js"></script>
+<script src="main-client.js"></script>
+<script>
+  var transition = 2000
+
+  function changeToStack() {
+    var cubes = document.querySelectorAll('.hero__anim');
+    [].slice.call(cubes).forEach(function (el) {
+      el.classList.add('out')
+      setTimeout(function () {
+        el.classList.remove('cube')
+        el.classList.remove('out')
+        el.classList.add('stack')
+      }, 500);
+    });
+  }
+
+  function changeToBar() {
+    var cubes = document.querySelectorAll('.hero__anim');
+    [].slice.call(cubes).forEach(function (el) {
+      el.classList.add('out')
+      setTimeout(function () {
+        el.classList.remove('stack')
+        el.classList.remove('out')
+        el.classList.add('bar')
+      }, 500);
+    });
+  }
+
+  function changeToCube() {
+    var cubes = document.querySelectorAll('.hero__anim');
+    [].slice.call(cubes).forEach(function (el) {
+      el.classList.add('out')
+      setTimeout(function () {
+        el.classList.remove('bar')
+        el.classList.remove('out')
+        el.classList.add('cube')
+      }, 500);
+    });
+  }
+
+  function typewriter(selector, speed, txt) {
+    var e = document.querySelector(selector);
+    var promise = new Promise(function (resolve) {
+      var i = 0;
+      e.innerText = "";
+      e.style.opacity = 1;
+
+      var writeText = function () {
+        if (i < txt.length) {
+          e.innerHTML += txt.charAt(i);
+          i++;
+          setTimeout(writeText, speed);
+        }
+        else {
+          resolve();
+        }
+      }
+
+      writeText();
+    });
+
+    return promise;
+  }
+
+  var headers = ["Data Analytics", "Full-stack development", "Data visualisation"];
+
+  function changeSubHeader(i) {
+    if (i >= headers.length || i == null)
+      i = 0;
+
+    switch (i) {
+      case 0:
+        var f = changeToCube
+        break;
+      case 1:
+        var f = changeToStack
+        break;
+      case 2:
+        var f = changeToBar
+        break;
+    }
+
+    f();
+    setTimeout(function () {
+      typewriter(".hero__title--sub", 120, headers[i])
+        .then(function () {
+          setTimeout(function () {
+            i++;
+            changeSubHeader(i);
+          }, transition);
+        });
+    }, 500);
+  }
+
+  changeSubHeader(1);	 
+</script>
+</body>
+
+</html>

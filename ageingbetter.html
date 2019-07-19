@@ -1,0 +1,178 @@
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" rel="stylesheet"> 
+  <link href="https://unpkg.com/ionicons@4.5.5/dist/css/ionicons.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <title>Power BI PPTX MicroService</title>
+<body>
+  <section class="section section__hero">
+    <div class="section__content">
+      <div class="flexgrid flexgrid--columns">
+        <div class="hero__nav">
+          <a href="/#projects">projects</a>          
+          <a href="/#skills">skills</a>
+          <a href="/#code_examples">code examples</a>
+          <a href="/#contact_me">contact me</a>
+        </div>
+        <div class="hero__header">
+          <div class="hero__scene">
+            <div class="hero__anim cube">
+              <div class="hero__section hero__section--1"></div>
+              <div class="hero__section hero__section--2"></div>
+              <div class="hero__section hero__section--3"></div>
+            </div>
+          </div>
+          <div class="hero__titles">
+            <h2 class="hero__title hero__title--main">Mark Hammond</h2>
+              <h4 class="hero__title hero__title--sub hero__title--cursor"></h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section section--white">
+  <div class="section__content flexgrid flexgrid--columns">
+    <h1 class="section__header">PowerBI PPTX MicroService</h1>
+
+    <h4 id="goals">Goals</h4>
+    <ul>
+      <li>The client has a Power BI Report with more than 15 pages</li>
+      <li>As a result, they can’t use Power BI’s in built PowerPoint export as it has a 15 page limit</li>
+      <li>They’re also migrating to Power BI Embedded</li>
+      <li>The in-built PowerPoint export functionality provided by Microsoft takes 5-10 minutes to export, ideally the new solution needs to be faster but doesn’t need to be instant</li>
+    </ul>
+
+    <h4 id="proposed-solution">Proposed Solution</h4>
+    <ul>
+      <li>Create a NodeJS application that can take a Power BI report ID and set of filters, and return a PPTX file containing high resolution screenshots of the report (similar to Microsoft’s feature)</li>
+      <li>The report file is stored in a folder directory after the first time it is ran. This means the second person who tries to grab the report with the same filter criteria will get the pre-rendered report instantly</li>
+      <li>MongoDB is used to store file references</li>
+      <li>NodeJS generates this report using puppeteer, which is Google’s chromium automation tool which boasts faster speeds than selenium, and promise support.</li>
+      <li>Create it as a micro-service, so it can be used across different projects going forward, and can be put on its own server if the chromium automation is intensive on RAM and CPU resources.</li>
+    </ul>
+
+    <h4 id="result">Result</h4>
+<a class="project__link" href="https://github.com/mhammo/powerbi-powerpoint-service" markdown="1">
+  <span>See the github repository here</span>
+  <svg class="project__link_arrow" viewBox="0 0 13.5 12.2">
+    <path d="M7.5 12.2l-.7-.7 5.3-5.4L6.8.7l.7-.7 6 6.1"></path>
+    <path opacity="0.5" d="M0 5.6h12.4v1H0z"></path>
+  </svg>
+</a>
+    <ul>
+      <li>We deployed the NodeJS application on its own low cost Linux server</li>
+      <li>PPTX files rendered in 2 minutes, which to put it in perspective is at least twice as fast as the Microsoft service at its fastest</li>
+      <li>Files were deleted on a cron job, whenever the Power BI report was updated with new data</li>
+      <li>The micro-service has been used on another project now to generate PPTX files for sending automated emails to stakeholders</li>
+    </ul>
+  </div>
+</section>
+
+  <section class="section section--dark section__footer flexgrid flexgrid--columns">
+    <h4 id="contact_me" class="footer__header"><a href="mailto:mark_hammond@live.co.uk">mark_hammond@live.co.uk</a></h4>
+    <h4 class="footer__header"><a href="https://github.com/mhammo"><img class="logo__github" src="assets/img/GitHub-Mark-Inverted-64px.png"> https://github.com/mhammo</a></h4>
+    
+  </section>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.4/bluebird.min.js"></script>
+<script src="main-client.js"></script>
+<script>
+  var transition = 2000
+
+  function changeToStack() {
+    var cubes = document.querySelectorAll('.hero__anim');
+    [].slice.call(cubes).forEach(function (el) {
+      el.classList.add('out')
+      setTimeout(function () {
+        el.classList.remove('cube')
+        el.classList.remove('out')
+        el.classList.add('stack')
+      }, 500);
+    });
+  }
+
+  function changeToBar() {
+    var cubes = document.querySelectorAll('.hero__anim');
+    [].slice.call(cubes).forEach(function (el) {
+      el.classList.add('out')
+      setTimeout(function () {
+        el.classList.remove('stack')
+        el.classList.remove('out')
+        el.classList.add('bar')
+      }, 500);
+    });
+  }
+
+  function changeToCube() {
+    var cubes = document.querySelectorAll('.hero__anim');
+    [].slice.call(cubes).forEach(function (el) {
+      el.classList.add('out')
+      setTimeout(function () {
+        el.classList.remove('bar')
+        el.classList.remove('out')
+        el.classList.add('cube')
+      }, 500);
+    });
+  }
+
+  function typewriter(selector, speed, txt) {
+    var e = document.querySelector(selector);
+    var promise = new Promise(function (resolve) {
+      var i = 0;
+      e.innerText = "";
+      e.style.opacity = 1;
+
+      var writeText = function () {
+        if (i < txt.length) {
+          e.innerHTML += txt.charAt(i);
+          i++;
+          setTimeout(writeText, speed);
+        }
+        else {
+          resolve();
+        }
+      }
+
+      writeText();
+    });
+
+    return promise;
+  }
+
+  var headers = ["Data Analytics", "Full-stack development", "Data visualisation"];
+
+  function changeSubHeader(i) {
+    if (i >= headers.length || i == null)
+      i = 0;
+
+    switch (i) {
+      case 0:
+        var f = changeToCube
+        break;
+      case 1:
+        var f = changeToStack
+        break;
+      case 2:
+        var f = changeToBar
+        break;
+    }
+
+    f();
+    setTimeout(function () {
+      typewriter(".hero__title--sub", 120, headers[i])
+        .then(function () {
+          setTimeout(function () {
+            i++;
+            changeSubHeader(i);
+          }, transition);
+        });
+    }, 500);
+  }
+
+  changeSubHeader(1);	 
+</script>
+</body>
+
+</html>
