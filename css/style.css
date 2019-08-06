@@ -286,6 +286,14 @@ a.flexbox:hover {
   width: 100%;
   position: relative; }
 
+.project__image_container--skn {
+  height: 170px;
+  margin-bottom: 5em; }
+
+@media screen and (max-width: 870px) {
+  .project__image_container--skn {
+    height: 90px;
+    margin-bottom: 2em; } }
 .project__image_wrapper {
   height: 100%;
   width: 100%;
