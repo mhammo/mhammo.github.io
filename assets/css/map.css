@@ -102,8 +102,7 @@ strong {
 .anime-mini-logo {
   width: 100px;
   height: 24px;
-  -webkit-transform: scaleY(0.5);
-          transform: scaleY(0.5); }
+  transform: scaleY(0.5); }
 
 /* Typography */
 html, body {
@@ -351,8 +350,7 @@ pattern path {
 
 .svg__world path {
   fill: #6e84ff;
-  -webkit-filter: drop-shadow(0 5px 5px transparent);
-          filter: drop-shadow(0 5px 5px transparent); }
+  filter: drop-shadow(0 5px 5px transparent); }
 
 .svg__routes .svg__route {
   fill: none;
@@ -606,8 +604,7 @@ pattern path {
 .svg__world path {
   fill: #edd2a3;
   stroke: #8b6e43;
-  -webkit-filter: drop-shadow(0 5px 5px #b69e6a);
-          filter: drop-shadow(0 5px 5px #b69e6a); }
+  filter: drop-shadow(0 5px 5px #b69e6a); }
 
 .svg__timer {
   color: #695332;
@@ -628,3 +625,5 @@ pattern path {
   width: 90%;
   background: #f4e3c5;
   box-shadow: 0px 0px 15px 2px #888888; }
+
+/*# sourceMappingURL=main-client.bundle.css.map*/
