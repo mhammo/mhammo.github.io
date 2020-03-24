@@ -128,9 +128,11 @@ a.flexbox:hover { text-decoration: none; }
 
 .project__sunburst__section { fill: none; stroke-width: 1; stroke: white; transition: all .3s; }
 
-.project__sunburst__svg { position: absolute; top: 0; left: 0; height: 100%; width: 100%; }
+.project__sunburst__svg { position: absolute; top: 0; left: 0; height: 362; width: 100%; transition: height .3s; }
 
 .project__sunburst__box { position: relative; margin: 2em auto; width: 100%; }
+
+.project__sunburst:hover .project__sunburst__svg { height: 320; }
 
 .project__sunburst:hover .project__sunburst__section--green { stroke: #1f993a; }
 
